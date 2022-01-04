@@ -20,7 +20,8 @@ services:
       - EMAIL=${EMAIL}
     volumes:
       - letsencrypt-data:/etc/letsencrypt
-    command: "certonly --agree-tos --dns-cloudflare --dns-cloudflare-credentials /.secrets/certbot/cloudflare.ini -m ${EMAIL} -d ${DOMAIN} -d ${WILDCARD_DOMAIN} -n"
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do sh cert.sh; sleep 12h & wait $${!}; done;"
+    # command: "certonly --agree-tos --dns-cloudflare --dns-cloudflare-credentials /.secrets/certbot/cloudflare.ini -m ${EMAIL} -d ${DOMAIN} -d ${WILDCARD_DOMAIN} -n"
 
 volumes:
   letsencrypt-data:
