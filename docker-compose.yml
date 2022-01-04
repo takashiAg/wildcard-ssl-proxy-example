@@ -1,13 +1,24 @@
 version: "3"
 services:
-  nginx:
-    image: nginx:1.19.2-alpine
+  app:
+    build:
+      context: ./app
     restart: always
+    ports:
+      - "3000:3000"
+
+  nginx:
+    build:
+      context: ./nginx
+      args:
+        - DOMAIN
+    restart: always
+    # command: /bin/sh -c " && nginx -g 'daemon off;'"
     volumes:
-      - /etc/nginx/conf.d:/etc/nginx/conf.d
       - letsencrypt-data:/etc/letsencrypt
-      - /var/www/html:/var/www/html
-    network_mode: host
+    ports:
+      - "80:80"
+      - "443:443"
 
   certbot:
     build:
